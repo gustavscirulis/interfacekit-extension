@@ -1,0 +1,27 @@
+{
+  "name": "interfacekit-extension",
+  "version": "0.1.0",
+  "description": "Chrome extension wrapper around interface-kit.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "bundle": "esbuild src/content.ts src/background.ts --bundle --format=iife --target=chrome120 --define:process.env.NODE_ENV=\\\"production\\\" --outdir=dist",
+    "build": "pnpm run bundle --minify && cp manifest.json dist/",
+    "watch": "cp manifest.json dist/ && pnpm run bundle --sourcemap --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "packageManager": "pnpm@10.23.0",
+  "dependencies": {
+    "interface-kit": "^0.1.3",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.2.2",
+    "esbuild": "^0.28.1",
+    "typescript": "^7.0.2"
+  }
+}
