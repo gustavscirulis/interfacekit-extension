@@ -7,8 +7,9 @@
   "scripts": {
     "clean": "rm -rf dist",
     "bundle": "esbuild src/content.ts src/background.ts --bundle --format=iife --target=chrome120 --define:process.env.NODE_ENV=\\\"production\\\" --outdir=dist",
-    "build": "pnpm run bundle --minify && cp manifest.json dist/",
-    "watch": "cp manifest.json dist/ && pnpm run bundle --sourcemap --watch",
+    "assets": "mkdir -p dist && cp manifest.json dist/ && cp -R icons dist/",
+    "build": "pnpm run bundle --minify && pnpm run assets",
+    "watch": "pnpm run assets && pnpm run bundle --sourcemap --watch",
     "typecheck": "tsc --noEmit"
   },
   "keywords": [],
