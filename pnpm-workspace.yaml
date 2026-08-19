@@ -1,0 +1,2 @@
+patchedDependencies:
+  interface-kit@0.1.3: patches/interface-kit@0.1.3.patch

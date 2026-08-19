@@ -4,13 +4,18 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  interface-kit@0.1.3:
+    hash: dd9a328ec83039df5a1938233464e33cbec0dacb5d5ada6aba3e0eab8591545e
+    path: patches/interface-kit@0.1.3.patch
+
 importers:
 
   .:
     dependencies:
       interface-kit:
         specifier: ^0.1.3
-        version: 0.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 0.1.3(patch_hash=dd9a328ec83039df5a1938233464e33cbec0dacb5d5ada6aba3e0eab8591545e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react:
         specifier: ^19.2.8
         version: 19.2.8
@@ -574,7 +579,7 @@ snapshots:
       react: 19.2.8
       react-dom: 19.2.8(react@19.2.8)
 
-  interface-kit@0.1.3(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
+  interface-kit@0.1.3(patch_hash=dd9a328ec83039df5a1938233464e33cbec0dacb5d5ada6aba3e0eab8591545e)(react-dom@19.2.8(react@19.2.8))(react@19.2.8):
     dependencies:
       motion: 12.43.0(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       react: 19.2.8
