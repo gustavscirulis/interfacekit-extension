@@ -37,6 +37,32 @@ Two non-obvious requirements, both silent failures if missed:
 The esbuild `--define:process.env.NODE_ENV` flag is load-bearing: it selects React's production
 build and eliminates a bare `process` reference in the dependency that would otherwise throw.
 
+## Patched dependency
+
+`patches/interface-kit@0.1.3.patch` (applied via `patchedDependencies` in `pnpm-workspace.yaml`) fixes
+three bugs in `interface-kit`'s click handler that only show up on real apps, all in `dist/index.js`:
+
+- `handleClick` ran `document.querySelector('[contenteditable="true"]:not([data-interface-kit])')`
+  document-wide and treated any match as "the kit is mid text-edit", swallowing the click and
+  clearing the selection. Any app with a mounted rich-text editor — Lexical, ProseMirror, Slate, or a
+  hand-rolled `contentEditable` div — matched on every click, so the editor was stuck in picking mode:
+  hover highlighting worked, clicking never opened the panel. Both that check and the sibling
+  `elementUnder.closest('[contenteditable="true"]')` bail are now gated on `state.isEditingText`,
+  which also makes app-owned editable regions selectable.
+- `SelectionOverlay` dropped its outline when React replaced the selected node but never cleared
+  `state.selectedElement`, leaving the panel open on a detached element with default values. It now
+  clears the selection.
+- Clicking a different element while one was selected only deselected, so switching selection took two
+  clicks. It now reselects, matching the headless `dist/core.js` engine.
+
+`dist/react.js` and `dist/core.js` carry the same three bugs upstream but are unreachable from this
+extension, so they are left alone.
+
+Bumping `interface-kit` past 0.1.3 makes the patch unused, which fails `pnpm install` loudly rather
+than silently reverting the fixes. Re-diff the hunks against the new `dist/index.js` (search for
+`contenteditable="true"]:not`), re-run `pnpm patch interface-kit@<version>` / `pnpm patch-commit`, and
+re-verify before taking the bump.
+
 ## Limitations
 
 - Style edits are ephemeral and are lost on reload.

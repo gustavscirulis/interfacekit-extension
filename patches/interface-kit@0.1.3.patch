@@ -1,0 +1,63 @@
+diff --git a/dist/index.js b/dist/index.js
+index 79a140b023400c8b6cab938694cf1c2cfd266915..7d7783ddcdb55deb12bec4d13a8f9af0a3e8a08f 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -13318,7 +13318,7 @@ function isRectEqual2(a, b) {
+ function SelectionOverlay() {
+   const state = useInterfaceKitUI();
+   const hoveredElement = useInterfaceKitHover();
+-  const { getSelectedElement } = useInterfaceKitActions();
++  const { getSelectedElement, setSelectedElement } = useInterfaceKitActions();
+   const [currentRect, setCurrentRect] = useState30(null);
+   const lastSelectedRef = useRef26(null);
+   useEffect25(() => {
+@@ -13334,8 +13334,10 @@ function SelectionOverlay() {
+     let frameId = 0;
+     let active = true;
+     const updateRect = () => {
+-      if (!active || !element.isConnected) {
++      if (!active) return;
++      if (!element.isConnected) {
+         setCurrentRect(null);
++        setSelectedElement(null);
+         return;
+       }
+       const nextRect = toRectSnapshot(element.getBoundingClientRect());
+@@ -13350,7 +13352,7 @@ function SelectionOverlay() {
+       active = false;
+       window.cancelAnimationFrame(frameId);
+     };
+-  }, [getSelectedElement, state.selectedElement]);
++  }, [getSelectedElement, setSelectedElement, state.selectedElement]);
+   if (state.selectedElement && currentRect) {
+     lastSelectedRef.current = {
+       key: state.selectedElement.key,
+@@ -13525,12 +13527,12 @@ function useElementSelection() {
+     const elementUnder = document.elementFromPoint(e.clientX, e.clientY);
+     if (!(elementUnder instanceof HTMLElement)) return;
+     if (elementUnder.closest(`[${INTERFACE_KIT_ATTR}]`)) return;
+-    if (elementUnder.closest('[contenteditable="true"]')) {
++    if (state.isEditingText && elementUnder.closest('[contenteditable="true"]')) {
+       return;
+     }
+-    const activeEditable = document.querySelector(
++    const activeEditable = state.isEditingText ? document.querySelector(
+       '[contenteditable="true"]:not([data-interface-kit])'
+-    );
++    ) : null;
+     if (activeEditable instanceof HTMLElement) {
+       exitTextEditing();
+       setSelectedElement(null);
+@@ -13542,11 +13544,7 @@ function useElementSelection() {
+     e.stopPropagation();
+     const bestElement = findBestElement(elementUnder);
+     const selectedElement = getSelectedElement();
+-    if (state.selectedElement) {
+-      if (selectedElement === bestElement) {
+-        return;
+-      }
+-      setSelectedElement(null);
++    if (state.selectedElement && selectedElement === bestElement) {
+       return;
+     }
+     const elementInfo = extractElementInfo(bestElement);
