@@ -68,3 +68,10 @@ re-verify before taking the bump.
 - Style edits are ephemeral and are lost on reload.
 - Iframes are not covered — the editor binds to the top-level document.
 - The generated prompt references DOM selectors, not source files.
+
+## License
+
+This extension wrapper is licensed under MIT. See `LICENSE`.
+
+The extension depends on `interface-kit` and other third-party packages, which
+remain under their own licenses. See `THIRD_PARTY_NOTICES.md`.
